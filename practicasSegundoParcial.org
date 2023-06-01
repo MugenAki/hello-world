@@ -1,0 +1,578 @@
+#+title: Prácticas segundo parcial
+
+* Entregas:
+- Para el día de examen de segundo parcial, todas las prácticas
+  excepto:
+  + Seguridad en inicio de sesión
+  + Sandbox
+  + Canal de comunicación
+- Esas últimas tres prácticas se pueden entregar como máximo el día
+  del ordinario
+
+* Crear repositorio de código:
+** Teoría:
+	- Qué es el control de versiones y para que sirve
+	  + Notas:
+	    * Dos funcionalidades principales: controlar versiones,
+              permite integrar trabajo en equipo
+	    * Controladores: git, mercurial, svn...  
+	- Conociendo github
+	- Uso e instalación de un front-end
+	- Clonar repositorio
+        - Operaciones básicas:
+          + Clonar, stage, commit, push, fetch, pull
+          + Push: sincronizar versión local con versión remota
+            (central), lo que se sube en si son los cambios entre
+            versión remota y versión local
+          + fetch: sirve para revisar si ha habido cambios en la
+            versión remota, sin descargar los cambios. Si no ves
+            cambios quiere decir que nadie a hecho un push después de
+            tu último push o después de que clonaste
+          + pull: permite descargar la última versión remota de forma
+            local
+          + fetch:  siempre antes de hacer un commit/push haz un fetch
+          + stage: permite agregar un archivo nuevo al control de
+            versiones, por defecto los archivos nuevos no son
+            gestiones. También establecer los cambios que quieres que
+            se consideren en el siguiente commit
+          + commit: cambiar versión local con últimos cambios que se
+            tengan. Antes de poder hacer un pull tienes que hacer un
+            commit. Cada commit tiene un comentario asociado, donde
+            se.
+            * Antes de hacer un commit registra tu correo:
+              git config --global user.email "correoPersonal"
+            * También tu nombre:
+              git config --global user.name "Tu Nombre"
+            comenta que cambios hay
+          + Operación de merge
+            * Significa mezclar, osea sincronizar versiones
+            * Cada que se hace un commit está pendiente un merge entre
+              versión local y remota.
+            * Un pull hacer hace un merge si le es posible (si no hay conflictos de merge) 
+          + Conflicto de merge: se da cuando hay dos versiones del mismo
+            archivo y no se puede decidir cual de las dos versiones es
+            la correcta. Por ejemplo si un compañero edita el
+            archivo1.txt y lo sube (le hace push) y luego ustedes no
+            hacen un pull antes hacer el push y su push incluye también
+            una modificación al archivo1.txt.
+          + Para prevenir
+            * Antes de hacer un commit pidan a sus compañeros que no
+              hagan un commit
+            * Evitar trabajar lo más posible sobre los mismos archivos
+            * Hacer siempre un fetch antes un commit para ver si hay cambios en conflicto
+            * Si los hay:
+              - Respaldar versión local
+              - Revertir versión local a la versión del último pull:
+                git checkout -- archivoEnConflicto
+              - Hacer pull
+              - Integrar cambios del respaldo en la versión nueva
+              - Hacer commit y push
+          + En el peor de los casos:
+            * Hay un conflicto y no lo saben resolver
+            * Ya no pueden hacer ninguna otra operación porque git les
+              pide que resuelvan el conflicto antes
+            * Clonar nuevamente el repo en un directorio nuevo y en
+              esa versión ajustar los cambios
+** Practicas:     
+	- Crear un repositorio vacío de tu proyecto en github y clonarlo
+      - Agregar a compañeros de equipo
+      - Cada compañero debe tener su versión local clonada
+* Análisis estático de código
+** Teoría:
+        - Qué es y para qué sirve
+          + Es un análisis que se hace sobre el código sin ejecutarlo
+          + Osea que se revisa el texto
+          + Busca automatizar una práctica tradicional conocida como
+            revisión de código (code review)
+          + No busca remplazar la revisión de código manual, es una
+            ayuda
+          + El analizador busca patrones en el texto
+          + Se pueden localizar posibles defectos de funcionalidad (bugs)
+          + Encuentra code smells (son problemas en el código que pueden crear bugs o vulnerabilidades, se suelen asociar con malas prácticas)
+          + Localiza posibles problemas de seguridad, dando recomendaciones al respectos
+          + Vulnerabilidades encontradas
+          + Cobertura de pruebas: revisa si hay suficientes pruebas para el código
+          + Deuda técnica: que tanto tiempo te va a llevar corregir
+            los defectos encontrados
+          + Las herramientas tienen patrones para diversos lenguajes
+            de programación
+        - Sonar qube
+          - Es un servicio
+          - Sigue un modelo cliente-servidor
+          - El servidor es el que hace el análisis y presenta los reportes
+          - El cliente envía código para ser analizado
+          - El servidor tiene una interfaz web
+        - Deuda técnica
+          - Sonar scanner: https://docs.sonarqube.org/latest/analysis/overview/
+** Prácticas:
+      - Instalar y configurar sonnar qube y sonnar scanner
+      - Dar de alta usuarios para cada compañero en sonnar qube
+      - Scannear proyecto final
+	- Programar back-end (al menos partes relacionadas a bd) y
+          generar reporte mostrando que ya se atendieron los problemas
+          de seguridad detectados (asignar tareas de corrección entre
+          compañeros de equipo)
+
+* Manejo de configuración sensible
+** Teoría
+   - Separar código de su configuración
+   - Variables de entorno y archivo .env
+     + Crea un archivo .env (es texto plano) para la configuración de tu proyecto
+     + En el código en vez poner valores hardcodeado se ponen
+       referencias a variables de entorno
+     + Hacer un script que automatiza la exportación de las variables
+       del archivo env y luego inicié el sistema
+     + Cifrar archivo env y resolver el descifrado en el script de inicio
+   - Los secretos no pueden ir en el control de versiones
+   - Cifrado simple de secretos con ccrypt
+** Prácticas:
+    - Crear sistema web del proyecto
+    - Configurar para usar un manejador de bases de datos
+    - Separar configuración sensible de settings.py en archivo cifrado
+      .env
+    - Hacer script de ejecución para iniciar de forma segura ambiente
+      de depuración
+    - Subir evidencias a github
+
+* Seguridad en inicio de sesión
+** Teoría:
+     - Limitar intentos (demostración con django)
+     - Autenticación multi-factor
+       + Suele estar acompañado OTP (one time password)
+         * Sólo lo puedes usar una vez
+         * Caduca después de un tiempo
+         * Es aleatorio
+       + Formas de entregar OTPs: por correo, llamada, por SMS (no muy seguros
+       + Dispositivos externos: llaves (por ejemplo yubikeys), usan
+         protocolos como FIDO2, usa criptografía asimétrica (firmas digitales)
+       + Formas biométricas (como complemento): huella digital, iris
+         del ojo, reconocimiento facial, voz, etc.
+         propenso al SIM swapping)
+     - No confundir autenticación multi-factor con autenticación OAUTH 
+     - API de telegram
+** Prácticas:
+     - Hacer inicio de sesión del proyecto y registro de usuarios (registrar el bot de cada usuario) 
+     - Implementa el inicio de sesión multi-factor del proyecto
+       utilizando telegram (con OTP) y limitando intentos de inicio
+     - Se debe utilizar post para la entrega del código
+     - Los códigos de telegram deben ser aleatorios, deben expirar en
+       3 minutos y deben poder ser utilizados sólo una vez
+     - Si se pasa mal el token una vez, debe invalidarse todo el proceso
+
+* Almacenamiento de información sensible
+** Teoría
+   - Password hashing (scrypt, bcrypt).
+     + Un algoritmo de hash simplemente es un mapeo entro un número
+       entero y un binario
+     + Un hash es de una sola vía (desde el hash no puedes regresar al
+       original), cifrar es de dos vías (cifras y descifras)
+     + Los algoritmos de hash entregan un número de tamaño finito (por
+       ejemplo 16 bytes), pero la de archivos que puedes hashear es
+       teóricamente infinita, puede ser que dos archivos diferentes te
+       den el mismo hash, esto es una colisión  
+     + Propiedades de seguridad de un algoritmo de hash
+       * Resistencia de preimagen
+         - La preimagen es el conjunto de binarios que se producen con
+           un hash dado, lo cual es un número infinito
+         - Es muy difícil (o casi imposible) encontrar un solo elemento
+           de la preimagen dado el hash
+       * Segunda resistencia de preimagen
+         - Si tu tienes un ejemplo de hash y un ejemplo de preimagen,
+           sigue siendo muy difícil o casi imposible, encontrar otro
+           elemento de la pre-imagen. Protege del spoofing
+       * Resistencia a colisiones
+         - Qué tan probable es que haya colisiones
+         - No porque la preimagen sea infinita quiere decir que sea
+           probable que haya colisiones
+         - Una forma de reforzar esta propiedad es con hashes más
+           largos
+     + Usos de un algoritmo de hash:
+       * Revisiones de integridad
+       * Almacenar información sensible, como contaseñas
+         (password-hashing)
+     + Password hashing
+       * Se refiere a almacenar contraseñar a partir de su hash
+       * Es una forma segura y conveniente (más conveniente que el
+         cifrado porque no requiere proteger una llave)
+       * Si tienes el hash no sabes directamente la contraseña
+       * Siempre y cuando las contraseñas sean fuertes, protege la
+         contraseña
+       * Preocupan dos tipos de ataques:
+         1. Ataques de fuerza bruta/diccionario
+            - Formas de mitigar:
+              * Contraseñas seguras (reforzar políticas)
+              * Limitar intentos
+         2. Tabla arcoiris (rainbow tables)
+            - Se parte de que el atacante tiene los hashes
+            - El atacante tiene también una base de datos con hashes
+              asociados a contraseñas
+            - Para para cracker simplemente se le pregunta a la bd si
+              conoce el hash, regresando la contraseña correspondiente
+            - hashcat es un ejemplo de herramienta para generar tablas
+              arcoiris
+            - Es una forma muy rápida de cracker contraseñas débiles
+            - También evita tener el mismo hash para la misma contraseña de dos usuarios diferentes
+            - Formas de mitigar:
+              * Contraseñas seguras (reforzar políticas)
+              * Usar un SALT, te protege aunque tengas una contraseña
+                débil
+              * Un SALT no protege de un ataque de fuerza bruta/diccionario
+       * Cómo agregar password hashing a su sistema:
+         + A mano
+           - Usar directamente algoritmos de hashing, almacenar salt a mano y hashes
+           - Ventaja: muy flexible, se puede hacer como sea
+           - Desventajas: más complicado, más propenso a tener problemas de seguridad
+         + A través del framework
+           - Por ejemplo en Django esto se puede lograr con la app "auth"
+           - https://docs.djangoproject.com/en/4.2/topics/auth/
+           - Ventaja: más rápido y en general seguro (alguien ya auditó la seguridad)
+           - Desventaja: menos flexible en general, hay que hacer las cosas como te dicte el framework, si quieres algo especial es más complicado
+        
+** Código de apoyo
+#+begin_src python :session *py* :results output :exports both :tangled /tmp/test.py
+  import crypt
+  import os
+  import base64
+
+  password = 'patito'
+
+  bytes_aleatorios = os.urandom(16)
+  print(bytes_aleatorios)
+
+  salt = base64.b64encode(bytes_aleatorios).decode('utf-8')
+  print(salt)
+
+  hasheado = crypt.crypt(password, '$6$' + salt) # esto es lo que se guarda
+  print(hasheado)
+
+  # loguear usuario 
+  partes = hasheado.split('$')
+  complemento = '$' + partes[1] + '$' + partes[2] # parte[1] el el algoritmo, parte[2] es el salt
+  print(complemento)
+  print(hasheado == crypt.crypt('patito', complemento))
+
+#+end_src
+
+#+RESULTS:
+: b'\x91\xceg\xd6<k\xa8 0\xb6\xe9D]\xd4\xa4&'
+: kc5n1jxrqCAwtulEXdSkJg==
+: $6$kc5n1jxrqCAwtulE$yPpKD3GzJPuJGcUGkChOj/bTMc8QbJzYPCfZUCUSmv.yOcH5Y6153EKVqnVSVyYEN2TZ3IYQE8QmNvb3p/CE70
+: $6$kc5n1jxrqCAwtulE
+: True
+
+** Prácticas
+    - Hacer registro de usuarios, con políticas de creación de
+      passwords (mínimo 10 carácteres, mayúsculas, minúsuclas,
+      dígitos, al menos un carácter especial) e integrar Password
+      hashing seguro (tiene salt y usa un algoritmo de hash seguro) en
+      el registro y login de usuario. Se puede hacer la práctica de
+      forma manual o utilizando las facilidades que les dé su
+      framework de desarrollo
+      
+* Manejo seguro de sesiones web y cookies
+** Sesiones
+   - Establecer un tiempo de vida corto
+   - Decidir si se quiere cerrar la sesión en cuanto se cierra el
+     navegador
+   - Asegurarse de que se destruya la sesión al hacer logout
+     #+begin_src python :session *py* :results output :exports both :tangled /tmp/test.py
+       # esto va en el settings.py
+       SESSION_COOKIE_AGE = 3600 # 1 hora
+       SESSION_EXPIRE_AT_BROWSER_CLOSE = True # se destruye la sesión si se cierra el navegador
+
+       SESSION_COOKIE_SECURE = True # sólo en producción
+       SESSION_COOKIE_SAMESITE = 'Strict'
+     #+end_src
+- Para logout:
+  #+begin_src python :session *py* :results output :exports both :tangled /tmp/test.py
+def logout(request):
+    request.session['logueado'] = False
+    request.session.flush() # borra la sesión
+    return redirect('/enviar')        
+  #+end_src
+** Cookies
+   - No permitir que se tenga acceso a ellas desde javascript (httponly)
+   - No permitir que compartan (samesite, domain)
+   - Sólo mandarlas a través de https (secure)
+   - Hacer que caduquen:
+     + Hasta que se cierra la pestaña
+     + O por fecha
+#+begin_src python :session *py* :results output :exports both :tangled /tmp/test.py
+  # en una vista
+    respuesta = HttpResponse('Hola mundo')
+    respuesta.set_cookie('saludo', 'hola', max_age=None, samesite='Strict', secure=True,
+                         httponly=True)
+    return respuesta
+#+end_src
+- Más info:
+  https://docs.djangoproject.com/en/4.2/ref/request-response/
+** CSRF
+:EjemploAtaque:
+- Tienes una sesión abierta a tu app de banco, o una cookie de sesión
+  que no ha expirado
+- Ustedes reciben un corre (phising, spear phising), les dicen que
+  depositen dinero a una cuenta que tu conoces (no es necesario pedir
+  a una cuenta nueva desconocida)
+- En el correo te facilitan algún sitio web, para hacer las cosas más
+  rápido
+- El sitio al que mandan se ve como el de una aplicación de confianza
+  (la del banco, paypal, etc).
+- Cuando la víctima manda la petición, se hace una petición extra
+  hacía el sitio real, cambiando la información de transferencia
+- Como se tiene una cookie de sesión hacía el banco, el banco
+   establece que la petición es válida y hace la transferencia  
+:end:
+   - Lo que se quiere es evitar que nuestro servidor reciba datos de
+     un origen diferente al nuestro
+   - Cada vez que se entrega un formulario el servidor manda un
+     token que también almacena, si la petición del usuario no tiene
+     asociado un token valido la solicitud se rechaza
+
+#+begin_src python :session *py* :results output :exports both :tangled /tmp/test.py
+
+# en cualquier formulario
+{% csrf_token %}  
+#+end_src
+   
+** Práctica
+   - Establece la configuración de sesiones de forma segura de acuerdo
+     a lo visto (logout, settings). También establecer uso de tokens
+     CSRF en los formularios
+   - Asegurarse de que la cookie de sesión se maneja de forma segura 
+   
+* Sandbox con Docker
+  - Sandbox: ambiente de ejecución limitado, si se vulnera la
+    aplicación dentro del sandbox, esto no afecta a las demás
+    aplicaciones del sistema. Ayuda a mitigar la post-explotación
+  - Docker: permite aislar cualquier sistema en un sandbox, mediante
+    contenedores
+    + Contenedor: es como una máquina virtual, la diferencia más
+      importante es que no virtualiza el kernel. Se usa el mismo
+      kernel del sistema anfitrión
+    + Los contenedores son más ligeros: reusan el kernel, no necesitan
+      memoria reservada especial, ni espacio en disco especial
+      * Los contenedores reusan el SO anfitrión
+    + Esencialmente un contenedor es un proceso especial del sistema,
+      el kernel de Linux tiene mecanismos especiales para separar
+      estos procesos de los demás
+    + Es una tecnología creada principalmente para facilitar el
+      despliegue de sistemas
+      - Desplegar es poner en producción un sistema:
+        * Se necesita hardware (servidores, y conectividad)
+        * Necesitas software:
+          + Cubrir dependencias:
+            * Internas: bibliotecas de tu framework, o del lenguaje
+            * Ambiente: paquetes del SO, subsistemas, estructura del sistema de archivos, etc.
+        * Problemas comunes del despliegue de sistemas:
+          + Un servidor suele albergar muchos sistemas:
+            * Es posible que haya conflictos en las dependencias
+          + Reproducibilidad
+            * Tiene que ver con tener pobre documentación
+            * La migración se vuelve muy compleja
+            * El despliegue inicial es también muy complejo ya que requiere migrar de los sistemas de desarrollo a los sistemas de producción
+          + Escalabilidad
+            * Significa ser capaz de dar servicio a un número creciente de usuarios
+            * No es suficiente sólo comprar más hardware, se necesita que el software balancee la carga
+** Como los contenedores mitigan problemas de despliegue de software
+- Un sistema en cada contenedor con dependencias internas y de ambiente separadas: resuelve conflictos de dependencias y versiones
+- Al usar contenedores estás obligado a documentar lo que haces: al filosofía es automatizar todo por medio de scripts y configuraciones, los cuales sirven de documentación, detallando los pasos para hacer todo: mitigamos los problemas de reproducibilidad y migrar
+- Al tener todo separado en contenedores independientes y al tener procesos automatizados se vuelve más sencillo agregar capas de clustering, ejemplos:  swarm, kubernetes: esto ayuda a facilitar la escalabilidad
+
+** Conceptos básicos de contenedores 
+*** Imagen
+- Es un archivo que contiene la configuración del contenedor
+- Puedes crear varios contenedores de la misma imagen
+- Las imágenes se pueden descargar de un registro
+- Los registros pueden ser privados o públicos (como dockerhub)
+*** Contenedor
+- Es el proceso o conjunto de procesos que se crean a partir de una imagen
+- Está siendo gestionado por el OS anfitrión
+- Puede estar en tres estados:
+  + Corriendo
+  + Pausado
+  + Removido
+- Los contenedores son volátiles y efímeros: todo lo que almacena un contenedor dentro de su sistema de archivos se pierde si el contenedor se remueve
+- Si un contenedor no tiene trabajo, se detiene 
+*** Volúmenes
+- Es el mismo concepto que un directorio compartido
+- Nos ayudan a guardar datos que de otra forma se perderían por la naturaleza volátil de los contenedores
+*** Entorno
+- La configuración de los contenedores se hace tradicionalmente por variables de entorno
+- Dentro del contenedor se acceso directo a las variables de entorno configuradas 
+*** Red
+- Cada contenedor tiene su propio ambiente de red:
+  + hostname
+  + tiene sus propias interfaces de red (docker suele crear interfaces virtuales)
+  + Puede tener asociaciones a redes virtuales
+  + Tiene sus propios puertos
+- Puedes mapear puertos entre el contenedor y el anfitrión, esto crea un túnel. Le permite a un cliente externo tener acceso a un servicio dentro de un contenedor
+*** Dockerfile
+- Archivo de configuración que se parece a un script, donde se detallan los pasos para generar una imagen
+- Se necesita para crear una imagen del sistema que implementamos
+*** docker-compose
+- Es una tecnología de apoyo que nos permite configurar y desplegar a la vez varios contenedores para que se desplieguen en conjunto
+- Un sistema suele ser un conjunto de contenedores 
+
+** Comandos básicos
+   - docker images: ver imágenes de contenedores a las que se tiene acceso
+   - docker pull: descargar una imagen (por defecto se descarga de docker hub)
+   - docker run: crear un contenedor a partir de una imagen
+     + -p: mapear puertos entre el contenedor y el host
+     + -e: permite pasar variables de entorno
+     + -v: mapear directorios o archivos entre el host y el contenedor
+     + --rm: al detenerse el contenedor también se remueve
+     + -d: correr el contenedor en modo background
+     + -ti: abrir una terminal en modo interactivo en el contenedor
+     + --name: dar un nombre único al contenedor, evita que uses el ID
+       si no quieres 
+   - docker ps: ver contenedores en ejecución
+     - -a: ver todos los contenedores disponibles (contenedores detenidos)
+   - docker rmi: borrar imagen a partir del ID
+   - docker stop: detener una imagen a partir de su nombre o ID
+   - docker rm: remover un contenedor detenido, notar que no se puede
+     remover si no está detenido
+   - docker start: resumir un contenedor detenido
+   - docker logs: da acceso a la salida estándar y de error del
+     contenedor
+     - -f: seguir impresiones en bitácora
+   - docker exec: ejecutar un comando sobre el contenedor que está corriendo
+     + docker exec -t -i contenedor bash: entrar a un contenedor en ejecución
+   - docker buil rutaDockerFile -t nombre: crear un una imagen a partir de un Dockerfile
+
+** Pasar un sistema a contenedores
+- Ya tenemos un sistema local
+- Establecer dependencias
+  + Internas: framework, conector de bd
+  + Ambiente: manejador de BD, python, servidor web
+*** Preparar la app para servidor web
+- Requisitos:
+  + [X] App: básicamente el código del sistema
+  + [X] Servidor de aplicaciones: mediador entre la app y el servidor web: por ejemplo gunicorn
+  + [X] Servidor web
+** Seguridad en contenedores
+- Por defecto hay problemas de seguridad:
+  + [ ] Se utiliza root para todo
+  + [ ] Manejo de configuración sensible
+  + [ ] Uso de recursos: no hay por defecto medidas para mitigar DOS
+
+** Prácticas
+   - Integrar todo el proyecto a contenedores siguiendo
+     recomendaciones de seguridad vistas en clase
+* Seguridad en el canal de comunicación
+** Teoría
+*** TLS
+    - Es la tecnología que remplaza a SSL 
+    - autenticación: asegurarse de que te comunicas con la entidad
+      correcta: Certificados, firmas digitales
+    - integridad: asegurarse de que no ha habido tampering: hashing,
+      firmas digitales, MAC
+    - confidencialidad: asegurarse de que sólo las entidades
+      autorizadas pueden usar el contenido transmitido: cifrado
+      simétrico AES/chaca (preferentemente AEAD)
+**** Criptografía asimétrica
+- Dos llaves: pública y privada
+- Firmas digitales: autenticidad e integridad. Se firma con la llave
+  privada y se comprueba la firma con la llave pública
+- Si yo entro a algún sitio en internet necesito la llave pública del dominio
+- Las llaves públicas por si mismas no son confiables
+- Los certificados avalan a las llaves públicas
+- Los certificados vienen firmados por entidades de confianza (CA, issuer)
+- Los certificados se validan en cadena, hasta llegar a un certificado raíz
+- Los certificados raíz están avalados por si mismos (certificado auto firmado)
+- Los navegadores web incluyen certificados raíz en sus binarios 
+***   HTTPS
+     - Es HTTP con una envoltura de TLS
+*** Certificados TLS: x509:
+	    -3 elementos fundamentales: información de identidad (de subject e issuer), llave pública, firma digital
+	    -Los certificados deben estar avalados por un CA (Certified Authority)
+	    -Los certificados están firmados por el CA
+	    -Eventualmente todo certificado tiene que estar avalado por un CA raíz de confianza
+	 Pasos de TLS:
+	    1.- Establecer autenticacación con certificados
+	    2.- Establecer método criptográficos a usar (cipher suit)
+	    3.- Configuración inicial de métodos criptográficos para establecer canal seguro
+	    4.- Hacer transmisión en masa
+	    + Generación de certificados auto firmados para Nginx
+** Establecer un canal protegido 
+- ATENCIÓN: esta ayuda debe utilizarse bajo el supuesto de que se
+  entienden las implicaciónes de seguridad derivadas de utilizar
+  certificados autofirmados, en clase se dió una explicación de muchas
+  de esas implicaciones.  No utilices este material ciegamente.
+- El material utiliza los elementos de seguridad criptográfica recomendadas actualmente, esto no quiere decir que sean los recomendados en el futuro, es tu deber investigar y utilizar los elementos más seguros conocidos
+- Si se va a usar un dominio diferente a localhost para pruebas
+  locales, primero agregar a /etc/hosts el mapeo al dominio. Hacer
+  esto en cada máquina que va a participar en el sistema en la red
+  local
+*** Pasos
+**** Generar una llave privada asimétrica (debe resguardarse lo mejor posible):
+- La siguiente llave no es soportada en algunos navegadores con TLS
+  1.3, pero es probablemente una de las mejores opciones en este momento:
+  #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+openssl  genpkey -algorithm ED25519 -out miDominio_key.pem
+  #+end_src
+- Se puede utilizar también una llave más tradicional que será bien soportada:
+  #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+openssl genpkey -algorithm RSA -out miDominiokey_key.pem -pkeyopt rsa_keygen_bits:2048
+  #+end_src
+**** Generar una petición de certificado (CSR)
+  #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+openssl req -new -key miDominio_key.pem -out miDominio_request.csrHere's an improved version
+  #+end_src
+- Se harán una serie de preguntas, lo más importante es para el campo
+  CN (Common Name) poner el nombre del dominio de interés
+- Ver resultado: openssl req -in miDominio_request.csr -text
+**** Generar certificado auto-firmado
+  #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+openssl x509 -req -days 30 -in miDominio_request.csr -signkey miDominio_key.pem -out miDominio_cert.crt
+  #+end_src
+- Ver resultado: openssl x509 -in miDominio_cert.crt -text
+- Probar el certificado en un servidor de prueba:
+    #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+openssl s_server -accept 8888 -www -cert miDominio_cert.crt -key miDominio_key.pem
+  #+end_src
+**** Configurar NGINX: se asume que se utiliza el contenedor oficial de Docker
+- Obtener una copia de /etc/nginx/nginx.conf para editarla:
+  + Correr un contenedor, luego mediante docker exec guardar la copia
+- Editar la copia de nginx.conf, agregando al final del bloque http:
+    #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+ssl_certificate     /certs/miDominio_cert.crt;
+ssl_certificate_key /certs/miDominio_key.pem;
+ssl_protocols       TLSv1.3;
+  #+end_src
+  + notar que habrá un volumen hacia /certs en el contenedor de nginx
+- Editar archivo local.conf (o default.conf) (el que debe ir en /etc/nginx/conf.d):
+  + Agregar al inicio del bloque server (debería haber sólo 1 en un
+    despliegue de Docker):
+      #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+        listen 443 ssl default_server;   	
+        listen [::]:443 ssl default_server ;
+        server_name miDominio;
+  #+end_src
+  + En ese mismo bloque quitar el listen al puerto 80 (dos líneas)
+- Agregar redirección http a https, se debe agregar un nuevo bloque
+  server:
+  #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+server {
+    listen         80;
+    listen  	   [::]:80;
+    server_name    miDominio;
+    return         301 https://miDominio$request_uri;
+    }
+  #+end_src  
+- Tu docker-compose se debe ver similar al siguiente para el servicio
+  nginx:
+  #+begin_src sh :session bash :results output :exports both :tangled /tmp/bash.sh
+  nginx:
+    image: nginx
+    restart: always
+    volumes:
+      - ./config/conf.d:/etc/nginx/conf.d # aquí va el archivo local.conf
+      - ./config/certs:/certs  # directorio del key y cert
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 443:443
+      - 80:80
+  #+end_src  
+** Práctica
+   - Agregar soporte de HTTPS al proyecto
+   - Puede ser con certificados autofirmados o con un hosting
